@@ -1,0 +1,7 @@
+# Development tools only; hardwatch itself has no runtime dependencies.
+# Exact pins so every machine and CI run uses the same versions.
+# Dependabot opens a pull request when a newer version is released.
+pytest==9.2.0
+pytest-cov==7.1.0
+mypy==2.4.1
+ruff==0.17.6

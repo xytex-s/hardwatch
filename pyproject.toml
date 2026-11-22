@@ -1,0 +1,85 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hardwatch"
+dynamic = ["version"]
+description = "Read-only hardening and detection-readiness auditor for Debian and Ubuntu servers."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Ethan M." }]
+keywords = ["security", "hardening", "linux", "audit", "detection"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Environment :: Console",
+    "Intended Audience :: System Administrators",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+    "Topic :: System :: Systems Administration",
+    "Typing :: Typed",
+]
+# Deliberately empty: hardwatch has no runtime dependencies.
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/xytex-s/hardwatch"
+Issues = "https://github.com/xytex-s/hardwatch/issues"
+Changelog = "https://github.com/xytex-s/hardwatch/blob/main/CHANGELOG.md"
+
+[project.scripts]
+hardwatch = "hardwatch.cli:main"
+
+[tool.hatch.version]
+path = "src/hardwatch/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hardwatch"]
+
+# ---------------------------------------------------------------- tooling
+
+[tool.pytest.ini_options]
+minversion = "9.0"
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+
+[tool.coverage.run]
+source = ["hardwatch"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_unreachable = true
+files = ["src", "tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E", "W",   # pycodestyle
+    "F",        # pyflakes
+    "I",        # import sorting
+    "B",        # bugbear: likely bugs
+    "UP",       # pyupgrade: modern syntax
+    "S",        # bandit: security smells (shell=True, eval, weak hashes...)
+    "SIM",      # simplifications
+    "RUF",      # ruff-specific
+]
+
+[tool.ruff.lint.per-file-ignores]
+# assert is how pytest works; it is only banned in shipped code.
+"tests/**" = ["S101"]
