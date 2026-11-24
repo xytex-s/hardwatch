@@ -126,6 +126,38 @@ def test_root_must_exist(tmp_path: Path) -> None:
         SystemView(tmp_path / "nope")
 
 
+@pytest.mark.parametrize(
+    "path",
+    [
+        "/../secret.txt",
+        "/etc/../../secret.txt",
+        "/etc/ssh/../../../secret.txt",
+    ],
+)
+def test_parent_traversal_escaping_the_root_is_refused(
+    tmp_path: Path,
+    make_root: MakeRoot,
+    path: str,
+) -> None:
+    # The secret is outside the audit root, in the temporary area.
+    secret = tmp_path / "secret.txt"
+    secret.write_text("host secret", encoding="utf-8")
+
+    root = make_root({"/etc/ssh/placeholder": ""})
+    view = SystemView(root)
+
+    with pytest.raises(PathOutsideRootError, match="outside the audit root"):
+        view.read_text(path)
+
+
+def test_parent_traversal_inside_the_root_is_allowed(
+    make_root: MakeRoot,
+) -> None:
+    hostname = "test-hostname\n"
+    view = SystemView(make_root({"/etc/hostname": hostname}))
+
+    assert view.read_text("/etc/../etc/hostname") == hostname
+
 # ----------------------------------------------------------------- commands
 
 
