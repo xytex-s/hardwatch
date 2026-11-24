@@ -158,6 +158,7 @@ def test_parent_traversal_inside_the_root_is_allowed(
 
     assert view.read_text("/etc/../etc/hostname") == hostname
 
+
 # ----------------------------------------------------------------- commands
 
 
