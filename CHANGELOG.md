@@ -17,3 +17,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   with read-only workflow permissions.
 - Dependabot updates for development tools and GitHub Actions.
 - README, SECURITY policy and this changelog.
+
+### Security
+
+- GitHub Actions pinned to full commit SHAs so a moved or compromised tag cannot change what CI runs.
